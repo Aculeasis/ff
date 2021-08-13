@@ -8,23 +8,23 @@ import operator
 
 ENDPOINT = 'https://api.github.com/repos/Aculeasis/rhvoice-wrapper-bin/releases'
 OSES = {
-    ['ubuntu-20.04', 'ubuntu', 'linux']: 'linux',
-    ['windows-2019', 'windows', 'win']: 'win'
+    ('ubuntu-20.04', 'ubuntu', 'linux'): 'linux',
+    ('windows-2019', 'windows', 'win'): 'win'
 }
 
 ARCH = {
-    ['x32', 'x86', '32', '86', 'i686']: {
+    ('x32', 'x86', '32', '86', 'i686'): {
         'win': '32',
         'linux': '_i686'
     },
-    ['x64', 'x86_64', '64', 'amd64']: {
+    ('x64', 'x86_64', '64', 'amd64'): {
         'win': '_amd64',
         'linux': '_x86_64'
     },
-    ['aarch64', 'arm64', 'arm64v8']: {
+    ('aarch64', 'arm64', 'arm64v8'): {
         'linux': '_aarch64'
     },
-    ['armv7l', 'armv7', 'arm32', 'arm32v7']: {
+    ('armv7l', 'armv7', 'arm32', 'arm32v7'): {
         'linux': '_armv7l'
     },
 }
@@ -51,13 +51,13 @@ def prepare_release():
 def make_tail(os: str, arch: str):
     os = (os or 'ubuntu-20.04').lower()
     arch = (arch or 'x64').lower()
-    for k, v in OSES.values():
+    for k, v in OSES.items():
         if os in k:
             os = v
             break
     else:
         raise RuntimeError('Wrong OS: {}'.format(os))
-    for k, v in ARCH.values():
+    for k, v in ARCH.items():
         if arch in k:
             arch = v[os]
             break
