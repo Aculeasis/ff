@@ -50,33 +50,6 @@ def prepare_release(endpoint: str):
     return sorted(result.items(), key=operator.itemgetter(0), reverse=True)
 
 
-def make_tail(os: str, arch: str):
-    os = (os or 'ubuntu-20.04').lower()
-    arch = (arch or 'x64').lower()
-    for k, v in OSES.items():
-        if os in k:
-            os = v
-            break
-    else:
-        raise RuntimeError('Wrong OS: {}'.format(os))
-    for k, v in ARCH.items():
-        if arch in k:
-            arch = v[os]
-            break
-    else:
-        raise RuntimeError('Wrong arch: {}'.format(arch))
-    return '-py3-none-{os}{arch}.whl'.format(os=os, arch=arch)
-
-
-def get_url():
-    tail, endpoint = prepare_data()
-    for _, targets in prepare_release(endpoint):
-        for target in targets:
-            if target.endswith(tail):
-                return target
-    raise RuntimeError('Package not found')
-
-
 def get_argv():
     targets = ['linux', 'x86_64', 'bin']
     return [(sys.argv[i+1] if len(sys.argv) >= i+2 else x).lower() for i, x in enumerate(targets)]
@@ -101,6 +74,15 @@ def prepare_data():
     else:
         raise RuntimeError('Wrong arch: {}'.format(arch))
     return '-py3-none-{os}{arch}.whl'.format(os=os, arch=arch), endpoint
+
+
+def get_url():
+    tail, endpoint = prepare_data()
+    for _, targets in prepare_release(endpoint):
+        for target in targets:
+            if target.endswith(tail):
+                return target
+    raise RuntimeError('Package not found')
 
 
 if __name__ == '__main__':
